@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FEIMEC 2026 · Musashi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --ink:#0D0F1A;--ink2:#4A4E6A;--ink3:#8B8FA8;
+  --bg:#F5F4F0;--bg2:#ECEAE4;--bg3:#E0DDD5;
+  --card:#FFFFFF;
+  --gold:#C8933A;--gold2:#F2C46D;
+  --navy:#0B1F3A;--navy2:#1A3560;
+  --green:#1A5C3A;--green2:#2E8B57;
+  --red:#B02020;--orange:#C05A10;
+  --radius:12px;--radius-lg:18px;--radius-xl:24px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,.label-u{font-family:'Syne',sans-serif}
+
+/* ── HEADER ── */
+.header{
+  background:var(--navy);
+  padding:env(safe-area-inset-top,0) 0 0;
+  position:sticky;top:0;z-index:50;
+}
+.header-inner{padding:14px 16px 0}
+.header-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.header-badge{
+  background:var(--gold);color:var(--navy);
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:.1em;padding:4px 8px;border-radius:6px;
+}
+.header-title{color:#fff;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.header-sub{color:rgba(255,255,255,.5);font-size:11px;margin-left:auto;font-style:italic}
+
+.day-strip{display:flex;gap:6px;overflow-x:auto;padding:0 16px 14px;scrollbar-width:none}
+.day-strip::-webkit-scrollbar{display:none}
+.day-pill{
+  flex-shrink:0;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;
+  padding:6px 14px;border-radius:20px;border:none;cursor:pointer;
+  background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);
+  transition:all .15s;letter-spacing:.02em;
+}
+.day-pill.active{background:var(--gold);color:var(--navy)}
+
+/* ── STATS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:var(--navy2);padding:12px 16px;gap:4px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.stat{text-align:center}
+.stat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1}
+.stat-l{font-size:10px;color:rgba(255,255,255,.45);margin-top:3px;letter-spacing:.03em}
+
+/* ── MAIN ── */
+.main{padding:16px 14px 96px}
+
+/* ── SECTION LABEL ── */
+.sec-label{
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;
+  margin:20px 0 10px;
+}
+
+/* ── BTN PRIMARY ── */
+.btn-primary{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px;border-radius:var(--radius-lg);border:none;cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;
+  background:var(--navy);color:#fff;box-shadow:var(--shadow);
+  transition:transform .1s,opacity .1s;
+}
+.btn-primary:active{transform:scale(.97);opacity:.9}
+.btn-primary.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--bg3);box-shadow:none}
+.btn-primary.danger{background:transparent;color:var(--red);border:1.5px solid var(--red);box-shadow:none}
+.btn-primary.success{background:var(--green);color:#fff}
+
+/* ── SUPPLIER CARD ── */
+.sup-card{
+  background:var(--card);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden;
+}
+.sup-card-head{
+  display:flex;align-items:center;gap:12px;
+  padding:14px;cursor:pointer;
+}
+.sup-icon{
+  width:42px;height:42px;border-radius:var(--radius);
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.sup-info{flex:1;min-width:0}
+.sup-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+.sup-meta{font-size:12px;color:var(--ink3);margin-top:2px;display:flex;gap:6px;align-items:center}
+.sup-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.stars-sm{color:var(--gold);font-size:11px;letter-spacing:1px}
+.chevron{color:var(--ink3);font-size:14px;transition:transform .2s}
+.sup-card.open .chevron{transform:rotate(90deg)}
+
+.sup-body{
+  display:none;padding:0 14px 14px;
+  border-top:1px solid var(--bg2);
+}
+.sup-card.open .sup-body{display:block}
+
+/* ── BADGES ── */
+.badge-row{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.badge{
+  font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;
+  font-family:'Syne',sans-serif;letter-spacing:.02em;
+}
+.b-std{background:#E8F1FF;color:#1A3A7A}
+.b-esp{background:#FFF0DC;color:#7A3A00}
+.b-dir{background:#E6F4EC;color:#1A5C3A}
+.b-dist{background:#FFEAEA;color:#7A1A1A}
+.b-cat{background:var(--bg2);color:var(--ink2)}
+.b-day{background:var(--navy);color:rgba(255,255,255,.8)}
+
+.note-box{
+  background:var(--bg);border-radius:var(--radius);
+  padding:11px 13px;font-size:13px;line-height:1.65;
+  color:var(--ink2);margin-top:8px;font-style:italic;
+  border-left:3px solid var(--gold2);
+}
+
+/* ── PHOTOS ── */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.photo-slot{
+  aspect-ratio:1;border-radius:var(--radius);overflow:hidden;
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  position:relative;cursor:pointer;
+}
+.photo-slot img{width:100%;height:100%;object-fit:cover}
+.photo-add-icon{font-size:24px;color:var(--ink3)}
+.photo-del{
+  position:absolute;top:4px;right:4px;width:22px;height:22px;
+  background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;
+  font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+
+/* ── FORM ── */
+.form-field{margin-top:12px}
+.form-label{font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;font-family:'Syne',sans-serif;display:block;margin-bottom:5px}
+.form-input{
+  width:100%;padding:11px 14px;border-radius:var(--radius);
+  border:1.5px solid var(--bg3);background:var(--bg);
+  color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;
+  transition:border-color .15s;
+}
+.form-input:focus{outline:none;border-color:var(--navy)}
+textarea.form-input{resize:none;min-height:80px;line-height:1.6}
+select.form-input{appearance:none;cursor:pointer}
+
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.tag-opt{
+  padding:6px 14px;border-radius:20px;font-size:12px;font-family:'Syne',sans-serif;
+  font-weight:600;letter-spacing:.02em;cursor:pointer;
+  border:1.5px solid var(--bg3);background:var(--bg);color:var(--ink2);
+  transition:all .12s;
+}
+.tag-opt.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+.star-picker{display:flex;gap:6px;margin-top:6px}
+.sp-star{font-size:26px;cursor:pointer;color:var(--bg3);transition:color .1s;line-height:1}
+.sp-star.on{color:var(--gold)}
+
+/* ── MODAL ── */
+.modal-bg{
+  display:none;position:fixed;inset:0;background:rgba(10,14,30,.55);
+  z-index:100;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.modal-bg.open{display:flex}
+.modal{
+  background:var(--bg);width:100%;max-width:520px;
+  border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  max-height:92vh;overflow-y:auto;
+  padding:16px 16px calc(32px + env(safe-area-inset-bottom,0));
+}
+.modal-handle{width:36px;height:4px;background:var(--bg3);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:16px;color:var(--ink)}
+
+/* ── DIARY ── */
+.diary-card{
+  background:var(--card);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);padding:14px;margin-bottom:10px;
+}
+.diary-day{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.08em;margin-bottom:6px}
+.diary-text{font-size:14px;line-height:1.7;color:var(--ink2)}
+
+/* ── REPORT ── */
+.rpt-block{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden}
+.rpt-head{
+  padding:12px 16px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.06em;color:#fff;text-transform:uppercase;
+}
+.rpt-head.navy{background:var(--navy)}
+.rpt-head.gold{background:var(--gold);color:var(--navy)}
+.rpt-head.green{background:var(--green)}
+.rpt-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 16px;border-bottom:1px solid var(--bg2);font-size:13px;
+}
+.rpt-row:last-child{border-bottom:none}
+.rpt-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--navy);font-size:14px}
+
+/* ── NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--card);border-top:1px solid var(--bg2);
+  display:flex;z-index:50;
+  padding-bottom:env(safe-area-inset-bottom,0);
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:10px 4px;border:none;background:none;cursor:pointer;
+  font-size:10px;font-family:'Syne',sans-serif;font-weight:600;
+  letter-spacing:.04em;color:var(--ink3);gap:4px;transition:color .15s;
+}
+.nav-btn.active{color:var(--navy)}
+.nav-icon{font-size:22px;line-height:1}
+
+/* ── VIEW ── */
+.view{display:none}
+.view.active{display:block}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;top:80px;left:50%;transform:translateX(-50%);
+  background:var(--green);color:#fff;padding:10px 22px;
+  border-radius:var(--radius-lg);font-size:13px;font-family:'Syne',sans-serif;
+  font-weight:600;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;
+  box-shadow:var(--shadow-lg);white-space:nowrap;
+}
+.toast.show{opacity:1}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:50px 20px;color:var(--ink3)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-text{font-size:14px;line-height:1.6}
+
+/* ── PRIORITY LABEL ── */
+.hot-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-badge">FEIMEC 2026</div>
+      <div class="header-title">Musashi · Campo</div>
+      <div class="header-sub">Maio 2026</div>
+    </div>
+  </div>
+  <div class="day-strip" id="dayStrip"></div>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="statsBar">
+  <div class="stat"><div class="stat-n" id="s-total">0</div><div class="stat-l">FORNEC.</div></div>
+  <div class="stat"><div class="stat-n" id="s-hot">0</div><div class="stat-l">PRIORIT.</div></div>
+  <div class="stat"><div class="stat-n" id="s-dir">0</div><div class="stat-l">DIRETO</div></div>
+  <div class="stat"><div class="stat-n" id="s-fotos">0</div><div class="stat-l">FOTOS</div></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- VIEW: FORNECEDORES -->
+  <div class="view active" id="view-sup">
+    <div class="sec-label">Registros da visita</div>
+    <button class="btn-primary" onclick="openModal()">
+      <span style="font-size:18px">+</span> Adicionar Fornecedor
+    </button>
+    <div id="supList" style="margin-top:10px"></div>
+  </div>
+
+  <!-- VIEW: DIÁRIO -->
+  <div class="view" id="view-diary">
+    <div class="sec-label">Anotação do dia</div>
+    <div style="background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:14px;margin-bottom:10px">
+      <div class="form-field">
+        <label class="form-label">Nota livre</label>
+        <textarea class="form-input" id="diaryInput" rows="4" placeholder="Tendências, observações de mercado, contexto de conversas, destaques do dia..."></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Dia</label>
+        <select class="form-input" id="diaryDay">
+          <option>05/Mai</option><option>06/Mai</option>
+          <option>07/Mai</option><option>08/Mai</option><option>09/Mai</option>
+        </select>
+      </div>
+      <button class="btn-primary success" style="margin-top:12px" onclick="saveDiary()">Salvar anotação</button>
+    </div>
+    <div class="sec-label">Anotações salvas</div>
+    <div id="diaryList"></div>
+  </div>
+
+  <!-- VIEW: RELATÓRIO -->
+  <div class="view" id="view-rpt">
+    <div class="sec-label">Resumo da visita</div>
+    <div id="rptContent"></div>
+    <div style="margin-top:12px">
+      <button class="btn-primary" onclick="exportJSON()" style="margin-bottom:8px">
+        ↓ Exportar dados (JSON)
+      </button>
+      <button class="btn-primary ghost" onclick="copyReport()">
+        ⎘ Copiar resumo para área de transferência
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL FORNECEDOR -->
+<div class="modal-bg" id="modal">
+<div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-title" id="modalTitle">Novo Fornecedor</div>
+
+  <div class="form-field">
+    <label class="form-label">Nome do Fornecedor / Fabricante *</label>
+    <input class="form-input" id="f-name" placeholder="Ex: Sandvik, Kennametal, Tungaloy...">
+  </div>
+  <div class="form-field">
+    <label class="form-label">País / Origem</label>
+    <input class="form-input" id="f-country" placeholder="Ex: Suécia, Japão, Brasil, Alemanha...">
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Segmento</label>
+    <div class="tag-wrap" id="catWrap">
+      <div class="tag-opt" onclick="tog(this)">Insertos</div>
+      <div class="tag-opt" onclick="tog(this)">Brocas</div>
+      <div class="tag-opt" onclick="tog(this)">Machos</div>
+      <div class="tag-opt" onclick="tog(this)">Fresas</div>
+      <div class="tag-opt" onclick="tog(this)">Ferramentas Especiais</div>
+      <div class="tag-opt" onclick="tog(this)">Máquinas CNC</div>
+      <div class="tag-opt" onclick="tog(this)">Equipamentos</div>
+      <div class="tag-opt" onclick="tog(this)">Medição</div>
+      <div class="tag-opt" onclick="tog(this)">Refrigeração</div>
+      <div class="tag-opt" onclick="tog(this)">Outro</div>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Tipo de Item</label>
+    <div class="tag-wrap" id="typeWrap">
+      <div class="tag-opt" onclick="single(this,'typeWrap')">Standard</div>
+      <div class="tag-opt" onclick="single(this,'typeWrap')">Especial</div>
+      <div class="tag-opt" onclick="single(this,'typeWrap')">Ambos</div>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Canal de Venda</label>
+    <div class="tag-wrap" id="chanWrap">
+      <div class="tag-opt" onclick="single(this,'chanWrap')">Venda Direta</div>
+      <div class="tag-opt" onclick="single(this,'chanWrap')">Via Distribuidor</div>
+      <div class="tag-opt" onclick="single(this,'chanWrap')">A Verificar</div>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Potencial de Homologação</label>
+    <div class="tag-wrap" id="potWrap">
+      <div class="tag-opt" onclick="single(this,'potWrap')">Alto</div>
+      <div class="tag-opt" onclick="single(this,'potWrap')">Médio</div>
+      <div class="tag-opt" onclick="single(this,'potWrap')">Baixo</div>
+      <div class="tag-opt" onclick="single(this,'potWrap')">Só informação</div>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Prioridade de Follow-up</label>
+    <div class="star-picker" id="starPicker">
+      <span class="sp-star" onclick="setStar(1)">★</span>
+      <span class="sp-star" onclick="setStar(2)">★</span>
+      <span class="sp-star" onclick="setStar(3)">★</span>
+      <span class="sp-star" onclick="setStar(4)">★</span>
+      <span class="sp-star" onclick="setStar(5)">★</span>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Contato</label>
+    <input class="form-input" id="f-contact" placeholder="Nome, e-mail ou WhatsApp">
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Observações / Pontos chave</label>
+    <textarea class="form-input" id="f-notes" rows="4" placeholder="O que foi discutido, proposta, diferenciais, produtos de interesse, condições especiais..."></textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Fotos (portfólio, catálogo, cartão)</label>
+    <div class="photo-grid" id="photoGrid"></div>
+    <input type="file" id="photoFile" accept="image/*" multiple style="display:none" onchange="addPhotos(event)">
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Dia da visita</label>
+    <select class="form-input" id="f-day">
+      <option>05/Mai</option><option>06/Mai</option>
+      <option>07/Mai</option><option>08/Mai</option><option>09/Mai</option>
+    </select>
+  </div>
+
+  <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+    <button class="btn-primary success" onclick="saveSupplier()">Salvar Fornecedor</button>
+    <button class="btn-primary ghost" onclick="closeModal()">Cancelar</button>
+    <button class="btn-primary danger" id="btnDel" style="display:none" onclick="delSupplier()">Excluir registro</button>
+  </div>
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-sup" onclick="go('sup')">
+    <span class="nav-icon">🏭</span>FORNEC.
+  </button>
+  <button class="nav-btn" id="nav-diary" onclick="go('diary')">
+    <span class="nav-icon">📝</span>DIÁRIO
+  </button>
+  <button class="nav-btn" id="nav-rpt" onclick="go('rpt')">
+    <span class="nav-icon">📊</span>RELATÓRIO
+  </button>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const DAYS = ['05/Mai','06/Mai','07/Mai','08/Mai','09/Mai'];
+const DAY_NAMES = {'05/Mai':'Chegada','06/Mai':'Ferramentas','07/Mai':'Roscas & Esp.','08/Mai':'Máquinas','09/Mai':'Encerr.'};
+
+let suppliers = [], diary = [], editId = null, curDay = 'todos', curStars = 0, curPhotos = [];
+
+function ls(key) { try { return JSON.parse(localStorage.getItem(key)||'[]'); } catch{return [];} }
+function lsSave(key,val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
+
+function init() {
+  suppliers = ls('feimec_sup');
+  diary = ls('feimec_diary');
+  renderDayStrip(); renderAll();
+}
+
+// ── DAY STRIP ────────────────────────────────────────────────────────────
+function renderDayStrip() {
+  const el = document.getElementById('dayStrip');
+  el.innerHTML = '';
+  [['todos','Todos'],...DAYS.map(d=>[d,d])].forEach(([val,label]) => {
+    const b = document.createElement('button');
+    b.className = 'day-pill' + (curDay===val?' active':'');
+    b.textContent = label;
+    b.onclick = () => { curDay=val; renderDayStrip(); renderSuppliers(); renderStats(); };
+    el.appendChild(b);
+  });
+}
+
+// ── STATS ────────────────────────────────────────────────────────────────
+function filtered() { return curDay==='todos' ? suppliers : suppliers.filter(s=>s.day===curDay); }
+function renderStats() {
+  const f = filtered();
+  document.getElementById('s-total').textContent = f.length;
+  document.getElementById('s-hot').textContent = f.filter(s=>s.stars>=4).length;
+  document.getElementById('s-dir').textContent = f.filter(s=>s.chan==='Venda Direta').length;
+  document.getElementById('s-fotos').textContent = f.reduce((a,s)=>a+(s.photos||[]).length,0);
+}
+
+// ── SUPPLIERS ────────────────────────────────────────────────────────────
+function catIcon(cats) {
+  const m={'Insertos':'🔩','Brocas':'🔧','Machos':'🔑','Fresas':'⚙️','Máquinas CNC':'🏗️','Medição':'📐','Refrigeração':'💧','Ferramentas Especiais':'🛠️'};
+  return cats&&cats[0] ? (m[cats[0]]||'🏭') : '🏭';
+}
+function starsStr(n) { return n ? '★'.repeat(n) : ''; }
+
+function renderSuppliers() {
+  renderStats();
+  const list = document.getElementById('supList');
+  const f = [...filtered()].sort((a,b)=>(b.stars||0)-(a.stars||0));
+  if (!f.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div><div class="empty-text">Nenhum fornecedor registrado ainda.<br>Toque em <strong>Adicionar Fornecedor</strong> para começar.</div></div>';
+    return;
+  }
+  list.innerHTML = '';
+  f.forEach(s => {
+    const c = document.createElement('div');
+    c.className = 'sup-card';
+    c.innerHTML = `
+      <div class="sup-card-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="sup-icon">${catIcon(s.cats)}</div>
+        <div class="sup-info">
+          <div class="sup-name">${s.name}</div>
+          <div class="sup-meta">
+            ${s.country?`<span>${s.country}</span><span>·</span>`:''}
+            <span>${s.day||''}</span>
+          </div>
+        </div>
+        <div class="sup-right">
+          <div class="stars-sm">${starsStr(s.stars)}</div>
+          <div class="chevron">›</div>
+        </div>
+      </div>
+      <div class="sup-body">
+        <div class="badge-row">
+          ${(s.cats||[]).map(c=>`<span class="badge b-cat">${c}</span>`).join('')}
+          ${s.type?`<span class="badge ${s.type==='Especial'?'b-esp':'b-std'}">${s.type}</span>`:''}
+          ${s.chan?`<span class="badge ${s.chan==='Venda Direta'?'b-dir':'b-dist'}">${s.chan}</span>`:''}
+          ${s.pot?`<span class="badge b-cat">Pot: ${s.pot}</span>`:''}
+        </div>
+        ${s.contact?`<div style="font-size:13px;color:var(--ink3);margin-bottom:4px">📞 ${s.contact}</div>`:''}
+        ${s.notes?`<div class="note-box">${s.notes.replace(/\n/g,'<br>')}</div>`:''}
+        ${(s.photos||[]).length ? `
+          <div class="photo-grid" style="margin-top:10px">
+            ${s.photos.map(p=>`<div class="photo-slot"><img src="${p}" loading="lazy"></div>`).join('')}
+          </div>` : ''}
+        <button class="btn-primary ghost" style="margin-top:12px;font-size:12px;padding:10px" onclick="openModal('${s.id}')">
+          ✏️ Editar
+        </button>
+      </div>
+    `;
+    list.appendChild(c);
+  });
+}
+
+// ── MODAL ────────────────────────────────────────────────────────────────
+function openModal(id) {
+  editId = id||null; curPhotos = []; curStars = 0;
+  document.getElementById('modalTitle').textContent = id ? 'Editar Fornecedor' : 'Novo Fornecedor';
+  document.getElementById('btnDel').style.display = id ? 'block' : 'none';
+
+  // reset
+  ['f-name','f-contact','f-notes'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f-country').value='';
+  document.getElementById('f-day').value='05/Mai';
+  document.querySelectorAll('.tag-opt').forEach(b=>b.classList.remove('on'));
+  setStar(0); renderPhotoGrid();
+
+  if (id) {
+    const s = suppliers.find(x=>x.id===id);
+    if (!s) return;
+    document.getElementById('f-name').value = s.name||'';
+    document.getElementById('f-country').value = s.country||'';
+    document.getElementById('f-contact').value = s.contact||'';
+    document.getElementById('f-notes').value = s.notes||'';
+    document.getElementById('f-day').value = s.day||'05/Mai';
+    curStars = s.stars||0; curPhotos = [...(s.photos||[])];
+    setStar(curStars); renderPhotoGrid();
+    (s.cats||[]).forEach(v=>{ document.querySelectorAll('#catWrap .tag-opt').forEach(b=>{ if(b.textContent.trim()===v) b.classList.add('on'); }); });
+    if(s.type) document.querySelectorAll('#typeWrap .tag-opt').forEach(b=>{ if(b.textContent.trim()===s.type) b.classList.add('on'); });
+    if(s.chan) document.querySelectorAll('#chanWrap .tag-opt').forEach(b=>{ if(b.textContent.trim()===s.chan) b.classList.add('on'); });
+    if(s.pot) document.querySelectorAll('#potWrap .tag-opt').forEach(b=>{ if(b.textContent.trim()===s.pot) b.classList.add('on'); });
+  }
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal').scrollTop = 0;
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); editId=null; }
+function tog(b) { b.classList.toggle('on'); }
+function single(b, wid) { document.querySelectorAll('#'+wid+' .tag-opt').forEach(x=>x.classList.remove('on')); b.classList.add('on'); }
+function setStar(n) {
+  curStars=n;
+  document.querySelectorAll('.sp-star').forEach((s,i)=>s.classList.toggle('on',i<n));
+}
+function getMulti(wid) { return [...document.querySelectorAll('#'+wid+' .tag-opt.on')].map(b=>b.textContent.trim()); }
+function getSingle(wid) { const b=document.querySelector('#'+wid+' .tag-opt.on'); return b?b.textContent.trim():''; }
+
+function addPhotos(e) {
+  [...e.target.files].forEach(f=>{
+    const r=new FileReader();
+    r.onload=ev=>{ curPhotos.push(ev.target.result); renderPhotoGrid(); };
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+function renderPhotoGrid() {
+  const g=document.getElementById('photoGrid'); g.innerHTML='';
+  curPhotos.forEach((p,i)=>{
+    const d=document.createElement('div'); d.className='photo-slot';
+    d.innerHTML=`<img src="${p}" loading="lazy"><button class="photo-del" onclick="rmPhoto(${i})">✕</button>`;
+    g.appendChild(d);
+  });
+  const add=document.createElement('div'); add.className='photo-slot';
+  add.innerHTML='<span class="photo-add-icon">+</span>';
+  add.onclick=()=>document.getElementById('photoFile').click();
+  g.appendChild(add);
+}
+function rmPhoto(i){ curPhotos.splice(i,1); renderPhotoGrid(); }
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+
+function saveSupplier() {
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){ alert('Informe o nome do fornecedor.'); return; }
+  const s={
+    id: editId||uid(), name,
+    country: document.getElementById('f-country').value.trim(),
+    cats: getMulti('catWrap'), type: getSingle('typeWrap'),
+    chan: getSingle('chanWrap'), pot: getSingle('potWrap'),
+    stars: curStars,
+    contact: document.getElementById('f-contact').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    day: document.getElementById('f-day').value,
+    photos: [...curPhotos], ts: Date.now(),
+  };
+  if(editId){ const i=suppliers.findIndex(x=>x.id===editId); if(i>=0) suppliers[i]=s; else suppliers.push(s); }
+  else suppliers.push(s);
+  lsSave('feimec_sup', suppliers);
+  closeModal(); renderAll(); toast('Fornecedor salvo ✓');
+}
+function delSupplier(){
+  if(!editId||!confirm('Excluir este registro?')) return;
+  suppliers=suppliers.filter(s=>s.id!==editId);
+  lsSave('feimec_sup',suppliers);
+  closeModal(); renderAll(); toast('Registro excluído');
+}
+
+// ── DIARY ────────────────────────────────────────────────────────────────
+function saveDiary(){
+  const txt=document.getElementById('diaryInput').value.trim();
+  if(!txt) return;
+  const day=document.getElementById('diaryDay').value;
+  diary.push({id:uid(),day,text:txt,ts:Date.now()});
+  lsSave('feimec_diary',diary);
+  document.getElementById('diaryInput').value='';
+  renderDiary(); toast('Anotação salva ✓');
+}
+function renderDiary(){
+  const el=document.getElementById('diaryList');
+  const f=curDay==='todos'?diary:diary.filter(d=>d.day===curDay);
+  if(!f.length){ el.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">Nenhuma anotação ainda.</div></div>'; return; }
+  el.innerHTML='';
+  [...f].reverse().forEach(d=>{
+    const c=document.createElement('div'); c.className='diary-card';
+    const t=new Date(d.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    c.innerHTML=`<div class="diary-day">${d.day} · ${t}</div><div class="diary-text">${d.text.replace(/\n/g,'<br>')}</div>`;
+    el.appendChild(c);
+  });
+}
+
+// ── REPORT ───────────────────────────────────────────────────────────────
+function renderReport(){
+  const el=document.getElementById('rptContent');
+  if(!suppliers.length){ el.innerHTML='<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Registre fornecedores para gerar o relatório.</div></div>'; return; }
+  const f=filtered();
+  const byDay={};
+  DAYS.forEach(d=>{ byDay[d]=suppliers.filter(s=>s.day===d); });
+  const cats={};
+  suppliers.forEach(s=>(s.cats||[]).forEach(c=>{ cats[c]=(cats[c]||0)+1; }));
+  const top=[...suppliers].sort((a,b)=>(b.stars||0)-(a.stars||0)).slice(0,5);
+  const byChan={dir:suppliers.filter(s=>s.chan==='Venda Direta').length,dist:suppliers.filter(s=>s.chan==='Via Distribuidor').length,av:suppliers.filter(s=>s.chan==='A Verificar').length};
+
+  el.innerHTML=`
+    <div class="rpt-block">
+      <div class="rpt-head navy">Resumo Geral</div>
+      <div class="rpt-row"><span>Total de fornecedores</span><span class="rpt-val">${suppliers.length}</span></div>
+      <div class="rpt-row"><span>Alta prioridade (4-5★)</span><span class="rpt-val">${suppliers.filter(s=>s.stars>=4).length}</span></div>
+      <div class="rpt-row"><span>Pot. de homologação Alto</span><span class="rpt-val">${suppliers.filter(s=>s.pot==='Alto').length}</span></div>
+      <div class="rpt-row"><span>Fotos capturadas</span><span class="rpt-val">${suppliers.reduce((a,s)=>a+(s.photos||[]).length,0)}</span></div>
+    </div>
+    <div class="rpt-block">
+      <div class="rpt-head gold">Canal de Venda</div>
+      <div class="rpt-row"><span>Venda Direta</span><span class="rpt-val">${byChan.dir}</span></div>
+      <div class="rpt-row"><span>Via Distribuidor</span><span class="rpt-val">${byChan.dist}</span></div>
+      <div class="rpt-row"><span>A Verificar</span><span class="rpt-val">${byChan.av}</span></div>
+    </div>
+    <div class="rpt-block">
+      <div class="rpt-head navy">Por Dia</div>
+      ${DAYS.map(d=>`<div class="rpt-row"><span>${d} — ${DAY_NAMES[d]}</span><span class="rpt-val">${byDay[d].length}</span></div>`).join('')}
+    </div>
+    <div class="rpt-block">
+      <div class="rpt-head navy">Por Segmento</div>
+      ${Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="rpt-row"><span>${k}</span><span class="rpt-val">${v}</span></div>`).join('')||'<div class="rpt-row"><span style="color:var(--ink3)">Nenhuma categoria registrada.</span></div>'}
+    </div>
+    <div class="rpt-block">
+      <div class="rpt-head green">Top Prioridades</div>
+      ${top.map((s,i)=>`<div class="rpt-row"><span>${i+1}. ${s.name}</span><span class="rpt-val">${starsStr(s.stars)}</span></div>`).join('')}
+    </div>
+  `;
+}
+
+function copyReport(){
+  const lines=['RELATÓRIO DE VISITA — FEIMEC 2026 — MUSASHI','='.repeat(45),''];
+  lines.push(`Total de fornecedores: ${suppliers.length}`);
+  lines.push(`Alta prioridade: ${suppliers.filter(s=>s.stars>=4).length}`);
+  lines.push(`Venda direta: ${suppliers.filter(s=>s.chan==='Venda Direta').length}`);
+  lines.push('');
+  suppliers.sort((a,b)=>(b.stars||0)-(a.stars||0)).forEach(s=>{
+    lines.push(`▶ ${s.name.toUpperCase()} (${s.day})`);
+    if(s.country) lines.push(`  País: ${s.country}`);
+    if(s.cats?.length) lines.push(`  Segmento: ${s.cats.join(', ')}`);
+    if(s.type) lines.push(`  Tipo: ${s.type}`);
+    if(s.chan) lines.push(`  Canal: ${s.chan}`);
+    if(s.pot) lines.push(`  Potencial: ${s.pot}`);
+    if(s.stars) lines.push(`  Prioridade: ${'★'.repeat(s.stars)}`);
+    if(s.contact) lines.push(`  Contato: ${s.contact}`);
+    if(s.notes) lines.push(`  Obs: ${s.notes}`);
+    lines.push('');
+  });
+  if(diary.length){ lines.push('─'.repeat(45)); lines.push('DIÁRIO DE CAMPO'); lines.push(''); diary.forEach(d=>lines.push(`[${d.day}] ${d.text}`)); }
+  navigator.clipboard?.writeText(lines.join('\n')).then(()=>toast('Copiado ✓')).catch(()=>toast('Use o botão Exportar'));
+}
+
+function exportJSON(){
+  const data={suppliers,diary,exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`FEIMEC2026_Musashi_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); toast('Exportado ✓');
+}
+
+// ── NAV ──────────────────────────────────────────────────────────────────
+function go(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.getElementById('nav-'+v).classList.add('active');
+  if(v==='rpt') renderReport();
+  if(v==='diary') renderDiary();
+  if(v==='sup') renderSuppliers();
+}
+
+function renderAll(){ renderDayStrip(); renderStats(); renderSuppliers(); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+// close modal on bg click
+document.getElementById('modal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+
+init();
+</script>
+</body>
+</html>
